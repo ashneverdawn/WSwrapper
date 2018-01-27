@@ -6,26 +6,19 @@ import (
 	"net"
 	"net/url"
 	"net/http"
+	"io"
 )
 
 type WSconn struct{ 
 	*websocket.Conn
 }
 func (ws WSconn) Read(b []byte) (int, error) {
-	_, msg, err := ws.ReadMessage()
+	var r io.Reader
+	_, r, err := ws.NextReader()
 	if err != nil {
 		return 0, err
 	}
-	if msg != nil {
-		for i := 0; i < len(msg) && i < len(b); i++ {
-			b[i] = msg[i]
-		}
-	}
-	length := len(msg)
-	if len(b) < len(msg) {
-		length = len(b)
-	}
-	return length, nil
+	return r.Read(b)
 }
 func (ws WSconn) Write(b []byte) (int, error) {
 	err := ws.WriteMessage(websocket.TextMessage, b)
@@ -56,8 +49,8 @@ func (d *Dialer) Dial(network, address string) (net.Conn, error){
 	return WSconn{conn}, err
 }
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  512,
-	WriteBufferSize: 512,
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
 }
 func Serve(ln net.Listener, address string, handler func(net.Conn) ) {
 
