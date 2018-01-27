@@ -21,8 +21,11 @@ func (ws WSconn) Read(b []byte) (int, error) {
 	return r.Read(b)
 }
 func (ws WSconn) Write(b []byte) (int, error) {
-	err := ws.WriteMessage(websocket.TextMessage, b)
-	return len(b), err
+	w, err := ws.NextWriter(websocket.TextMessage)
+	if err != nil {
+		return 0, err
+	}
+	return w.Write(b)
 }
 func (ws WSconn) SetDeadline(t time.Time) (error) {
 	return nil
