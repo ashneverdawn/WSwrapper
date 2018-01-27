@@ -32,7 +32,7 @@ func (ws WSconn) Write(b []byte) (int, error) {
 	return len(b), err
 }
 func (ws WSconn) SetDeadline(t time.Time) (error) {
-	return ws.SetDeadline(t)
+	return nil
 }
 
 type tcpKeepAliveListener struct {
