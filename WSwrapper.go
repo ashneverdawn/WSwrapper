@@ -56,8 +56,8 @@ func (d *Dialer) Dial(network, address string) (net.Conn, error){
 	return WSconn{conn}, err
 }
 var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
+	ReadBufferSize:  512,
+	WriteBufferSize: 512,
 }
 func Serve(ln net.Listener, address string, handler func(net.Conn) ) {
 
